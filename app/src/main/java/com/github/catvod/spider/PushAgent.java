@@ -8,6 +8,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Author: @SDL
  */
@@ -57,6 +61,20 @@ public class PushAgent extends Spider {
                 vodAtom.put("vod_pic", "https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
                 vodAtom.put("type_name", "网页");
                 vodAtom.put("vod_play_from", "parse");
+                vodAtom.put("vod_play_url", "立即播放$" + url);
+                list.put(vodAtom);
+                result.put("list", list);
+                return result.toString();
+            } else if (url.startsWith("magnet:")) {
+                JSONObject result = new JSONObject();
+                JSONArray list = new JSONArray();
+                JSONObject vodAtom = new JSONObject();
+                //vodAtom.put("vod_id", md5(url));
+                vodAtom.put("vod_id", url);
+                vodAtom.put("vod_name", "磁力推送");
+                vodAtom.put("vod_pic", "https://pic.rmb.bdstatic.com/bjh/1d0b02d0f57f0a42201f92caba5107ed.jpeg");
+                vodAtom.put("type_name", "磁力链接");
+                vodAtom.put("vod_play_from", "magnet");
                 vodAtom.put("vod_play_url", "立即播放$" + url);
                 list.put(vodAtom);
                 result.put("list", list);
