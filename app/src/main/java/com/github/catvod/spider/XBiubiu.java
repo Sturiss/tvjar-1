@@ -113,22 +113,25 @@ public class XBiubiu extends Spider {
             JSONArray videos = new JSONArray();
             ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
             for (int i = 0; i < jiequContents.size(); i++) {
-                try {
                     String jiequContent = jiequContents.get(i);
                     String title = subContent(jiequContent, getRuleVal("biaotiqian"), getRuleVal("biaotihou")).get(0);
                     String pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou")).get(0);
                     pic = Misc.fixUrl(webUrl, pic);
                     String link = subContent(jiequContent, getRuleVal("lianjieqian"), getRuleVal("lianjiehou")).get(0);
+                    String mark = "";
+                    if (!getRuleVal("fubiaotiqian").isEmpty() && !getRuleVal("fubiaotihou").isEmpty()) {
+                        try {
+                            mark = subContent(jiequContent, getRuleVal("fubiaotiqian"), getRuleVal("fubiaotihou")).get(0).replaceAll("\\s+", "").replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+                        } catch (Exception e) {
+                            SpiderDebug.log(e);
+                        }
+                    }
                     JSONObject v = new JSONObject();
                     v.put("vod_id", title + "$$$" + pic + "$$$" + link);
                     v.put("vod_name", title);
                     v.put("vod_pic", pic);
-                    v.put("vod_remarks", "");
+                    v.put("vod_remarks", mark);
                     videos.put(v);
-                } catch (Throwable th) {
-                    th.printStackTrace();
-                    break;
-                }
             }
             JSONObject result = new JSONObject();
             result.put("page", pg);
@@ -188,9 +191,56 @@ public class XBiubiu extends Spider {
                 }
             }
 
-            String cover = idInfo[1], title = idInfo[0], desc = "", category = "", area = "", year = "", remark = "", director = "", actor = "";
+            String cover = idInfo[1], title = idInfo[0], area = "";
+            String director = "";
+            String actor = "";
+            String desc = "";
+            String remark = "";
+            String year = "";
+            String category = "";
 
-
+            if (!getRuleVal("leixinqian").isEmpty() && !getRuleVal("leixinhou").isEmpty()) {
+                try {
+                    category = subContent(html, getRuleVal("leixinqian"), getRuleVal("leixinhou")).get(0).replaceAll("\\s+", "").replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
+            if (!getRuleVal("niandaiqian").isEmpty() && !getRuleVal("niandaihou").isEmpty()) {
+                try {
+                    year = subContent(html, getRuleVal("niandaiqian"), getRuleVal("niandaihou")).get(0).replaceAll("\\s+", "").replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
+            if (!getRuleVal("zhuangtaiqian").isEmpty() && !getRuleVal("zhuangtaihou").isEmpty()) {
+                try {
+                    remark = subContent(html, getRuleVal("zhuangtaiqian"), getRuleVal("zhuangtaihou")).get(0);
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
+            if (!getRuleVal("zhuyanqian").isEmpty() && !getRuleVal("zhuyanhou").isEmpty()) {
+                try {
+                    actor = subContent(html, getRuleVal("zhuyanqian"), getRuleVal("zhuyanhou")).get(0).replaceAll("\\s+", "");
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
+            if (!getRuleVal("daoyanqian").isEmpty() && !getRuleVal("daoyanhou").isEmpty()) {
+                try {
+                    director = subContent(html, getRuleVal("daoyanqian"), getRuleVal("daoyanhou")).get(0).replaceAll("\\s+", "");
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
+            if (!getRuleVal("juqingqian").isEmpty() && !getRuleVal("juqinghou").isEmpty()) {
+                try {
+                    desc = subContent(html, getRuleVal("juqingqian"), getRuleVal("juqinghou")).get(0);
+                } catch (Exception e) {
+                    SpiderDebug.log(e);
+                }
+            }
             JSONObject vod = new JSONObject();
             vod.put("vod_id", ids.get(0));
             vod.put("vod_name", title);
@@ -224,6 +274,7 @@ public class XBiubiu extends Spider {
         }
         return "";
     }
+
 
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
@@ -285,11 +336,19 @@ public class XBiubiu extends Spider {
                         String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
                         pic = Misc.fixUrl(webUrl, pic);
                         String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
+			String mark = "";
+	                if (!getRuleVal("fubiaotiqian").isEmpty() && !getRuleVal("fubiaotihou").isEmpty()) {
+	                    try {
+	                        mark = subContent(jiequContent, getRuleVal("fubiaotiqian"), getRuleVal("fubiaotihou")).get(0).replaceAll("\\s+", "").replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("[(/>)<]", "");
+	                    } catch (Exception e) {
+	                        SpiderDebug.log(e);
+	                    }
+	                }
                         JSONObject v = new JSONObject();
                         v.put("vod_id", title + "$$$" + pic + "$$$" + link);
                         v.put("vod_name", title);
                         v.put("vod_pic", pic);
-                        v.put("vod_remarks", "");
+                        v.put("vod_remarks", mark);
                         videos.put(v);
                     } catch (Throwable th) {
                         th.printStackTrace();
