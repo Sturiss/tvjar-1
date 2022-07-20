@@ -113,6 +113,7 @@ public class XBiubiu extends Spider {
             JSONArray videos = new JSONArray();
             ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
             for (int i = 0; i < jiequContents.size(); i++) {
+                try {
                     String jiequContent = jiequContents.get(i);
                     String title = subContent(jiequContent, getRuleVal("biaotiqian"), getRuleVal("biaotihou")).get(0);
                     String pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou")).get(0);
@@ -132,6 +133,10 @@ public class XBiubiu extends Spider {
                     v.put("vod_pic", pic);
                     v.put("vod_remarks", mark);
                     videos.put(v);
+                } catch (Throwable th) {
+                    th.printStackTrace();
+                    break;
+                }
             }
             JSONObject result = new JSONObject();
             result.put("page", pg);
